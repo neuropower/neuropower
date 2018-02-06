@@ -282,6 +282,8 @@ def options(request):
 
     desdata = DesignModel.objects.filter(SID=sid).last()
     opsform = DesignOptionsForm(request.POST or None, instance=desdata)
+    form = opsform.save(commit=False)
+    form.save()
 
     context["opsform"] = opsform
 
