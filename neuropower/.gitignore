@@ -15,6 +15,8 @@ media/designonsets/*
 ../dockernotes.txt
 apps/designtoolbox/archive/
 ../.remote-sync.json
+apps/designtoolbox/migrations/
+apps/neuropowertoolbox/migrations/
 env.list
 
 # Elastic Beanstalk Files
