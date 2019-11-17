@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/1.9/ref/settings/
 
 import os
 import sys
-from kombu import Exchange, Queue
+# from kombu import Exchange, Queue
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -34,7 +34,7 @@ MAILGUN_KEY = os.environ['MAILGUN_KEY']
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 LOCAL_DB = False
 
 ALLOWED_HOSTS = ['*','localhost']
@@ -77,9 +77,6 @@ INSTALLED_APPS = [
     'crispy_forms',
     'djangosecure',
     'sslserver',
-    "djcelery",
-    "opbeat.contrib.django",
-    "kombu.transport.django",
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -186,65 +183,46 @@ MEDIA_URL= "https://%s/" % AWS_S3_CUSTOM_DOMAIN
 MEDIA_ROOT='/'
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
-# Celery config
-
-CELERY_DEFAULT_QUEUE = 'default'
-CELERY_QUEUES = (
-    Queue('default', Exchange('default'), routing_key='default'),
-)
-CELERY_IMPORTS = ('apps.designtoolbox.tasks', )
-BROKER_TRANSPORT='redis'
-CELERY_ACCEPT_CONTENT = ['json']
-CELERYD_CONCURRENCY = 2
-CELERY_IMPORTS = ('apps.designtoolbox.tasks', )
-CELERY_TASK_SERIALIZER = 'json'
-CELERY_RESULT_SERIALIZER = 'json'
-CELERY_RESULT_BACKEND = 'redis://redis:6379/0'
-BROKER_URL = 'redis://redis:6379/0'
-CELERY_IGNORE_RESULT = False
-CELERYD_MAX_TASKS_PER_CHILD = 4
-CELERY_TRACK_STARTED = True
-
 ## App specific settings
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
 
 CORS_ORIGIN_ALLOW_ALL = True
 
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': True,
-    'formatters': {
-        'verbose': {
-            'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
-        },
-    },
-    'handlers': {
-        'opbeat': {
-            'level': 'WARNING',
-            'class': 'opbeat.contrib.django.handlers.OpbeatHandler',
-        },
-        'console': {
-            'level': 'DEBUG',
-            'class': 'logging.StreamHandler',
-            'formatter': 'verbose'
-        }
-    },
-    'loggers': {
-        'django.db.backends': {
-            'level': 'ERROR',
-            'handlers': ['console'],
-            'propagate': False,
-        },
-        'mysite': {
-            'level': 'WARNING',
-            'handlers': ['opbeat'],
-            'propagate': False,
-        },
-        # Log errors from the Opbeat module to the console (recommended)
-        'opbeat.errors': {
-            'level': 'ERROR',
-            'handlers': ['console'],
-            'propagate': False,
-        },
-    },
-}
+# LOGGING = {
+#     'version': 1,
+#     'disable_existing_loggers': True,
+#     'formatters': {
+#         'verbose': {
+#             'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
+#         },
+#     },
+#     'handlers': {
+#         'opbeat': {
+#             'level': 'WARNING',
+#             'class': 'opbeat.contrib.django.handlers.OpbeatHandler',
+#         },
+#         'console': {
+#             'level': 'DEBUG',
+#             'class': 'logging.StreamHandler',
+#             'formatter': 'verbose'
+#         }
+#     },
+#     'loggers': {
+#         'django.db.backends': {
+#             'level': 'ERROR',
+#             'handlers': ['console'],
+#             'propagate': False,
+#         },
+#         'mysite': {
+#             'level': 'WARNING',
+#             'handlers': ['opbeat'],
+#             'propagate': False,
+#         },
+#         # Log errors from the Opbeat module to the console (recommended)
+#         'opbeat.errors': {
+#             'level': 'ERROR',
+#             'handlers': ['console'],
+#             'propagate': False,
+#         },
+#     },
+# }

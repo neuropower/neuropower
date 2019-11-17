@@ -6,5 +6,4 @@ which python
 python manage.py makemigrations --merge --noinput
 python manage.py migrate --noinput
 python manage.py collectstatic --noinput
-#python manage.py celeryd -l info
 uwsgi uwsgi.ini

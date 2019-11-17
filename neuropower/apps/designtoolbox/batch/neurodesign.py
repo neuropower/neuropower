@@ -11,7 +11,6 @@ from django.core.exceptions import ObjectDoesNotExist
 from apps.designtoolbox.forms import DesignRunForm
 from apps.designtoolbox.models import DesignModel
 from django.conf import settings
-from celery import task, Celery
 from datetime import datetime
 import numpy as np
 
