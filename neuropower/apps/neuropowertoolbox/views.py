@@ -4,9 +4,9 @@ sys.path = sys.path[1:]
 from .forms import ParameterForm, PeakTableForm, MixtureForm, PowerTableForm, PowerForm
 from .models import NeuropowerModel
 from .utils import get_url, get_neuropower_steps, get_db_entries, get_session_id, create_local_copy, get_neurovault_form
-from neuropowercore import cluster, BUM, neuropowermodels
+from neuropower import cluster, BUM, neuropowermodels
 from django.http import HttpResponseRedirect
-from plots import plotPower, plotModel
+from .plots import plotPower, plotModel
 from django.shortcuts import render
 from django.conf import settings
 from scipy.stats import norm, t
@@ -118,27 +118,31 @@ def neuropowerinput(request,neurovault_id=None,end_session=False):
 
         # make local copies of map and mask
 
-        map_local = "/var/maps/"+sid+"_map"
-        mask_local = "/var/maps/"+sid+"_mask"
-
-        if not neuropowerdata.map_url == "":
-            map_url = neuropowerdata.map_url
-        else:
-            map_url = "https://"+settings.AWS_S3_CUSTOM_DOMAIN+str(neuropowerdata.spmfile.name)
-
-        map_local = create_local_copy(map_url,map_local)
-
-        if not neuropowerdata.maskfile == "":
-            mask_url = "https://"+settings.AWS_S3_CUSTOM_DOMAIN+str(neuropowerdata.maskfile.name)
-            mask_local = create_local_copy(mask_url,mask_local)
+        map_local_or = neuropowerdata.spmfile.name
+        mask_local_or = neuropowerdata.maskfile.name
+        map_local = "maps/"+sid+"_map.nii.gz"
+        mask_local = "maps/"+sid+"_mask.nii.gz"
+        os.rename(mask_local_or, mask_local)
+        os.rename(map_local_or, map_local)
+        #
+        # if not neuropowerdata.map_url == "":
+        #     map_url = neuropowerdata.map_url
+        # else:
+        #     map_url = "https://"+settings.AWS_S3_CUSTOM_DOMAIN+str(neuropowerdata.spmfile.name)
+        #
+        # map_local = create_local_copy(map_url,map_local)
+        #
+        # if not neuropowerdata.maskfile == "":
+        #     mask_url = "https://"+settings.AWS_S3_CUSTOM_DOMAIN+str(neuropowerdata.maskfile.name)
+        #     mask_local = create_local_copy(mask_url,mask_local)
 
         # save map locations to database
 
         form = parsform.save(commit = False)
-        form.map_url = map_url
+        # form.map_url = map_url
         form.map_local = map_local
         if not neuropowerdata.maskfile == "":
-            form.mask_url = mask_url
+            # form.mask_url = mask_url
             form.mask_local = mask_local
         else:
             form.mask_local = mask_local
@@ -153,6 +157,9 @@ def neuropowerinput(request,neurovault_id=None,end_session=False):
         if len(SPM.shape)>3:
             if not SPM.shape[3]==1 or len(SPM.shape)>4:
                 error = "shape"
+            else:
+                newimg = nib.Nifti1Image(SPM.get_data()[:,:,:,0], SPM.affine)
+                newimg.to_filename(neuropowerdata.map_local)
 
         # check if the IQR is realistic (= check whether these are Z- or T-values)
         IQR = np.subtract(*np.percentile(SPM.get_data(),[75,25]))
@@ -174,8 +181,15 @@ def neuropowerinput(request,neurovault_id=None,end_session=False):
                 form.nvox = nvox
             # if mask is given: check dimensions
             else:
-                mask = nib.load(neuropowerdata.mask_local).get_data()
-                if SPM.get_data().shape != mask.shape:
+                mask = nib.load(neuropowerdata.mask_local)
+                # let's not start putting in assertions --> should be clean errors
+                if len(mask.shape) > 3:
+                    if not SPM.shape[3] == 1 or len(SPM.shape) > 4:
+                        error = "shape"
+                    else:
+                        newmsk = nib.Nifti1Image(mask.get_data()[:, :, :, 0], mask.affine)
+                        newmsk.to_filename(neuropowerdata.mask_local)
+                if SPM.shape[:3] != mask.shape[:3]:
                     error = "dim"
                 else:
                     form.nvox = np.sum(mask)
@@ -216,7 +230,7 @@ def neuropowerviewer(request):
     if not link == "":
         return HttpResponseRedirect(link)
 
-    context["url"] = neuropowerdata.map_url
+    # context["url"] = neuropowerdata.map_url
     context["thr"] = neuropowerdata.Exc
     context["viewer"] = "<div class='papaya' data-params='params'></div>"
 
