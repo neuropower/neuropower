@@ -80,8 +80,13 @@ RUN pip install awscli --upgrade --user
 # Clear apt cache to reduce image size
 RUN rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-ADD neuropower-core /code/neuropower-core/
-RUN python /code/neuropower-core/setup.py install
+RUN apt-get update && apt-get install -y git
+RUN git clone https://github.com/neuropower/neuropower-core.git
+RUN rm -rf neuropower-core/build/lib/neuropower/
+WORKDIR /code/neuropower-core
+RUN which python
+RUN python setup.py install
 
+WORKDIR /code
 ENV PATH=~/.local/bin:$PATH
 # ENV PATH=/usr/lib/python3.7:$PATH
