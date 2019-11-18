@@ -79,17 +79,17 @@ INSTALLED_APPS = [
     'sslserver',
 ]
 
-MIDDLEWARE_CLASSES = [
+MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
-    'django.middleware.common.CommonMiddleware'
+    'django.middleware.clickjacking.XFrameOptionsMiddleware'
+    # 
+    # 'corsheaders.middleware.CorsMiddleware',
+    # 'django.middleware.common.CommonMiddleware'
 ]
 
 FILE_UPLOAD_HANDLERS = [
@@ -150,10 +150,10 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-AWS_STORAGE_BUCKET_NAME = os.environ['AWS_STORAGE_BUCKET_NAME']
-AWS_ACCESS_KEY_ID = os.environ['AWS_ACCESS_KEY_ID']
-AWS_SECRET_ACCESS_KEY = os.environ['AWS_SECRET_ACCESS_KEY']
-AWS_S3_CUSTOM_DOMAIN = "%s.s3.amazonaws.com" % AWS_STORAGE_BUCKET_NAME
+# AWS_STORAGE_BUCKET_NAME = os.environ['AWS_STORAGE_BUCKET_NAME']
+# AWS_ACCESS_KEY_ID = os.environ['AWS_ACCESS_KEY_ID']
+# AWS_SECRET_ACCESS_KEY = os.environ['AWS_SECRET_ACCESS_KEY']
+# AWS_S3_CUSTOM_DOMAIN = "%s.s3.amazonaws.com" % AWS_STORAGE_BUCKET_NAME
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.9/topics/i18n/
@@ -179,9 +179,9 @@ STATICFILES_DIRS = [
 STATIC_URL = '/static/'
 STATIC_ROOT = '/var/www/static/'
 
-MEDIA_URL= "https://%s/" % AWS_S3_CUSTOM_DOMAIN
-MEDIA_ROOT='/'
-DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+# MEDIA_URL= "https://%s/" % AWS_S3_CUSTOM_DOMAIN
+# MEDIA_ROOT='/'
+# DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
 ## App specific settings
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
