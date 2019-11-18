@@ -8,20 +8,18 @@ from django.shortcuts import render, render_to_response
 from django.core.mail import send_mail
 from django.conf import settings
 from scipy.stats import norm, t
-from utils.prepare_GA import *
+from .utils.prepare_GA import *
 from django.db.models import Q
 from datetime import datetime
-from utils.utils import *
+from .utils.utils import *
 from copy import deepcopy
 from .models import *
 import datetime as dt
 from .forms import *
 import pandas as pd
 import numpy as np
-import StringIO
 import requests
 import zipfile
-import urllib2
 import shutil
 import time
 import json
