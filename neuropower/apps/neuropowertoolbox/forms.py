@@ -87,7 +87,8 @@ class ParameterForm(forms.ModelForm):
 
         if map_url and spmfile == None:
             if not (map_url.endswith('.nii.gz') or map_url.endswith('.nii.gz')):
-                raise forms.ValidationError("The statistical map has the wrong format: please choose a nifti-file")
+                if not ('.nii' in map_url and map_url.endswith('.gz')):
+                    raise forms.ValidationError("The statistical map has the wrong format: please choose a nifti-file")
 
         if not spmfile == None:
             if spmfile.name:
