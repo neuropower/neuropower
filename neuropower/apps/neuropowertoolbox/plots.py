@@ -1,11 +1,11 @@
 import matplotlib as mpl
 mpl.use('Agg')
-from models import NeuropowerModel
+from .models import NeuropowerModel
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from palettable.colorbrewer.qualitative import Paired_12,Set1_9
 from django.http import HttpResponse, HttpResponseRedirect
 from neuropower import *
-from utils import get_session_id
+from .utils import get_session_id
 from mpld3 import plugins
 import pandas as pd
 import numpy as np
